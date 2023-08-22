@@ -7,11 +7,11 @@ pub struct ConwaysArgs {
     #[arg(short, long, default_value_t=' ')]
     pub dead: char,
 
-    // Live cell representation
+    /// Live cell representation
     #[arg(short, long, default_value_t='@')]
     pub live: char,
 
-    // Time in ms between each tick
+    /// Time in ms between each tick
     #[arg(short, long, default_value_t=50)]
     pub tick_rate: i32,
 }

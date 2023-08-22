@@ -109,9 +109,12 @@ fn main() {
     cbreak();
     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
 
+    let win = stdscr();
+    nodelay(win, true);
+
     let mut rows: i32 = 0;
     let mut cols: i32 = 0;
-    getmaxyx(stdscr(), &mut rows, &mut cols);
+    getmaxyx(win, &mut rows, &mut cols);
 
     let mut arr = vec![vec![false;rows as usize];cols as usize];
     arr = arr.noise();

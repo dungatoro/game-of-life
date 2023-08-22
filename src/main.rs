@@ -11,6 +11,8 @@ trait Life {
     fn print(&self);
 
     fn draw(&self, dead: char, live: char);
+
+    fn noise(&self) -> Self;
 }
 
 impl Life for Vec<Vec<bool>> {
@@ -86,6 +88,17 @@ impl Life for Vec<Vec<bool>> {
         }
 
     }
+
+    fn noise(&self) -> Self {
+        let mut rng = rand::thread_rng();
+        self.iter()
+            .map(|row| 
+                row.iter()
+                    .map(|_| rng.gen())
+                    .collect()
+                    )
+            .collect()
+    }
 }
 
 fn main() {
@@ -101,18 +114,7 @@ fn main() {
     getmaxyx(stdscr(), &mut rows, &mut cols);
 
     let mut arr = vec![vec![false;rows as usize];cols as usize];
-
-    // generate randome noise
-    let mut rng = rand::thread_rng();
-
-    arr = 
-    arr.iter()
-        .map(|row| 
-            row.iter()
-                .map(|_| rng.gen())
-                .collect()
-                )
-        .collect();
+    arr = arr.noise();
 
     loop {
         clear();

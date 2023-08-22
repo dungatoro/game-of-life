@@ -1,12 +1,16 @@
 use ncurses::*;
 use rand::Rng;
 
+mod args;
+use args::ConwaysArgs;
+use clap::Parser;
+
 trait Life {
     fn tick(&self) -> Self;
 
     fn print(&self);
 
-    fn draw(&self);
+    fn draw(&self, dead: char, live: char);
 }
 
 impl Life for Vec<Vec<bool>> {
@@ -73,11 +77,11 @@ impl Life for Vec<Vec<bool>> {
         }
     }
 
-    fn draw(&self) {
+    fn draw(&self, dead: char, live: char) {
 
         for (y, row) in self.iter().enumerate() {
             for (x, cell) in row.iter().enumerate() {
-                mvaddch(x as i32, y as i32, if *cell { '@' as u32 } else { '.' as u32 }  );
+                mvaddch(x as i32, y as i32, if *cell { live as u32 } else { dead as u32 }  );
             }
         }
 
@@ -85,6 +89,8 @@ impl Life for Vec<Vec<bool>> {
 }
 
 fn main() {
+    let args = ConwaysArgs::parse();
+
     initscr();
     noecho();
     cbreak();
@@ -96,12 +102,7 @@ fn main() {
 
     let mut arr = vec![vec![false;rows as usize];cols as usize];
 
-    // arr[3][3] = true; // glider
-    // arr[4][4] = true;
-    // arr[4][5] = true;
-    // arr[3][5] = true;
-    // arr[2][5] = true;
-    
+    // generate randome noise
     let mut rng = rand::thread_rng();
 
     arr = 
@@ -115,16 +116,9 @@ fn main() {
 
     loop {
         clear();
-        arr.draw();
+        arr.draw(args.dead, args.live);
         arr = arr.tick();
-        napms(50);
+        napms(args.tick_rate) ;
         refresh();
     }
-
-    // for _ in 0..35 {
-    //     arr.print();
-    //     arr = arr.tick();
-    //     println!();
-    // }
-
 }
